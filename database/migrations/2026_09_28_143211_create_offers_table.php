@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('companies_id')->constrained();
+            // Convention Laravel : <modele>_id -> company_id référence companies.id
+            $table->foreignId('company_id')->constrained()->restrictOnDelete();
+            $table->string('type_contrat'); // CDI, CDD, Alternance, Stage, Intérim
             $table->date('date_debut');
             $table->integer('salaire');
             $table->string('address');

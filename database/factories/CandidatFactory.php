@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\candidat;
+use App\Models\Candidat;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<candidat>
+ * @extends Factory<Candidat>
  */
 class CandidatFactory extends Factory
 {
@@ -18,8 +18,8 @@ class CandidatFactory extends Factory
     public function definition(): array
     {
         return [
-            'firstname'=>fake()->firstname(),
-            'lastname'=>fake()->lastname(),
+            'firstname' => fake()->firstName(),
+            'lastname' => fake()->lastName(),
         ];
     }
 }

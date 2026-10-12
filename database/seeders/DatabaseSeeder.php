@@ -3,12 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Company;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\CandidatSeeder;
-use Database\Seeders\companySeeder;
-use Database\Seeders\OfferSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,29 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-
-        $companies = [
-            'Bricoman',
-            'Leroy Merlin',
-            'Amazon',
-            'Boulanger',
-        ];
-        
-        foreach ($companies as $company) {
-            Company::factory()->create([
-                'nom' => $company,
-            ]);
-        }
-
+        // Ordre important : entreprises -> offres -> candidats (qui postulent aux offres)
         $this->call([
-            CandidatSeeder::class,
+            CompanySeeder::class,
             OfferSeeder::class,
+            CandidatSeeder::class,
         ]);
 
-        
-
+        // Compte de test (mot de passe : password)
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

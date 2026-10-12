@@ -2,74 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\company;
-use App\Http\Requests\StorecompanyRequest;
-use App\Http\Requests\UpdatecompanyRequest;
+use App\Http\Requests\StoreCompanyRequest;
+use App\Http\Requests\UpdateCompanyRequest;
+use App\Models\Company;
 
-class companyController extends Controller
+class CompanyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Liste des entreprises.
      */
     public function index()
     {
-        $companies = company::all();
-        return view('company.index', compact('companies'));
+        $companies = Company::withCount('offers')->orderBy('nom')->get();
+
+        return view('entreprises.index', compact('companies'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Formulaire d'ajout.
      */
     public function create()
     {
-        return view('company.create');
+        return view('entreprises.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre une nouvelle entreprise.
      */
-    public function store(StorecompanyRequest $request)
+    public function store(StoreCompanyRequest $request)
     {
-        $validated = $request->validate([
-            'nom'=>'required',
-        ]);
+        Company::create($request->validated());
 
-        company::create($validated);
-        return redirect()->route('company.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(company $company)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(company $company)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatecompanyRequest $request, company $company)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(company $company)
-    {
-        $company->delete();
         return redirect()
-            ->route('company.index')
+            ->route('entreprises.index')
+            ->with('success', 'Entreprise ajoutée avec succès.');
+    }
+
+    /**
+     * Détail d'une entreprise avec ses offres.
+     */
+    public function show(Company $company)
+    {
+        $company->load('offers.company');
+
+        return view('entreprises.show', compact('company'));
+    }
+
+    /**
+     * Formulaire de modification.
+     */
+    public function edit(Company $company)
+    {
+        return view('entreprises.edit', compact('company'));
+    }
+
+    /**
+     * Met à jour une entreprise.
+     */
+    public function update(UpdateCompanyRequest $request, Company $company)
+    {
+        $company->update($request->validated());
+
+        return redirect()
+            ->route('entreprises.index')
+            ->with('success', 'Entreprise modifiée avec succès.');
+    }
+
+    /**
+     * Supprime une entreprise (refusé si elle a encore des offres).
+     */
+    public function destroy(Company $company)
+    {
+        if ($company->offers()->exists()) {
+            return redirect()
+                ->route('entreprises.index')
+                ->with('error', "Impossible de supprimer « {$company->nom} » : elle a encore des offres.");
+        }
+
+        $company->delete();
+
+        return redirect()
+            ->route('entreprises.index')
             ->with('success', 'Entreprise supprimée avec succès.');
     }
 }
