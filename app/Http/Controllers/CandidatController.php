@@ -2,76 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\candidat;
-use App\Http\Requests\StorecandidatRequest;
-use App\Http\Requests\UpdatecandidatRequest;
+use App\Http\Requests\StoreCandidatRequest;
+use App\Http\Requests\UpdateCandidatRequest;
+use App\Models\Candidat;
+use App\Models\Offer;
 
 class CandidatController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Liste des candidats.
      */
     public function index()
     {
-        $candidats = Candidat::all();
-        return view('candidat.index', compact('candidats'));
+        $candidats = Candidat::withCount('offers')->orderBy('lastname')->get();
+
+        return view('candidats.index', compact('candidats'));
     }
 
-
     /**
-     * Show the form for creating a new resource.
+     * Formulaire d'ajout.
      */
     public function create()
     {
-        return view('candidat.create');
+        $offers = Offer::with('company')->orderBy('name')->get();
+
+        return view('candidats.create', compact('offers'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre un nouveau candidat et ses candidatures.
      */
-    public function store(StorecandidatRequest $request)
+    public function store(StoreCandidatRequest $request)
     {
-        $validated = $request->validate([
-            'firstname' => 'required',
-            'lastname' => 'required',
-        ]);
+        $candidat = Candidat::create($request->safe()->only(['firstname', 'lastname']));
 
-        Candidat::create($validated);
-        return redirect()->route('candidat.index')->with('success','candidat ajouté avec succès');
+        // Relation many-to-many : on enregistre les offres choisies dans la table pivot
+        $candidat->offers()->sync($request->input('offers', []));
+
+        return redirect()
+            ->route('candidats.index')
+            ->with('success', 'Candidat ajouté avec succès.');
     }
 
     /**
-     * Display the specified resource.
+     * Détail d'un candidat avec ses candidatures.
      */
-    public function show(candidat $candidat)
+    public function show(Candidat $candidat)
     {
-        //
+        $candidat->load('offers.company');
+
+        return view('candidats.show', compact('candidat'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Formulaire de modification.
      */
-    public function edit(candidat $candidat)
+    public function edit(Candidat $candidat)
     {
-        //
+        $offers = Offer::with('company')->orderBy('name')->get();
+
+        return view('candidats.edit', compact('candidat', 'offers'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour un candidat et ses candidatures.
      */
-    public function update(UpdatecandidatRequest $request, candidat $candidat)
+    public function update(UpdateCandidatRequest $request, Candidat $candidat)
     {
-        //
+        $candidat->update($request->safe()->only(['firstname', 'lastname']));
+        $candidat->offers()->sync($request->input('offers', []));
+
+        return redirect()
+            ->route('candidats.index')
+            ->with('success', 'Candidat modifié avec succès.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime un candidat (ses candidatures sont supprimées en cascade).
      */
-    public function destroy(candidat $candidat)
+    public function destroy(Candidat $candidat)
     {
         $candidat->delete();
+
         return redirect()
-            ->route('candidat.index')
-            ->with('success', 'Offre supprimée avec succès.');
+            ->route('candidats.index')
+            ->with('success', 'Candidat supprimé avec succès.');
     }
 }

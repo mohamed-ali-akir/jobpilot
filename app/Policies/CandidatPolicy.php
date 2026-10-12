@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\candidat;
+use App\Models\Candidat;
 use Illuminate\Auth\Access\Response;
 
 class CandidatPolicy
@@ -19,7 +19,7 @@ class CandidatPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, candidat $candidat): bool
+    public function view(User $user, Candidat $candidat): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class CandidatPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, candidat $candidat): bool
+    public function update(User $user, Candidat $candidat): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class CandidatPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, candidat $candidat): bool
+    public function delete(User $user, Candidat $candidat): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class CandidatPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, candidat $candidat): bool
+    public function restore(User $user, Candidat $candidat): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class CandidatPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, candidat $candidat): bool
+    public function forceDelete(User $user, Candidat $candidat): bool
     {
         return false;
     }

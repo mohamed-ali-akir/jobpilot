@@ -1,12 +1,10 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\Candidat;
-use Database\factories\CandidatFactory;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Offer;
 use Illuminate\Database\Seeder;
-
 
 class CandidatSeeder extends Seeder
 {
@@ -15,6 +13,11 @@ class CandidatSeeder extends Seeder
      */
     public function run(): void
     {
-        Candidat::factory()->count(5)->create();
+        // Chaque candidat postule à 1 à 3 offres existantes (relation many-to-many)
+        Candidat::factory()->count(6)->create()->each(function (Candidat $candidat) {
+            $candidat->offers()->attach(
+                Offer::inRandomOrder()->limit(rand(1, 3))->pluck('id')
+            );
+        });
     }
 }

@@ -16,6 +16,18 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                <flux:sidebar.group heading="JobPilot" class="grid">
+                    <flux:sidebar.item icon="briefcase" :href="route('offres.index')" :current="request()->routeIs('offres.*')">
+                        Offres
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="building-office" :href="route('entreprises.index')" :current="request()->routeIs('entreprises.*')">
+                        Entreprises
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="users" :href="route('candidats.index')" :current="request()->routeIs('candidats.*')">
+                        Candidats
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:spacer />

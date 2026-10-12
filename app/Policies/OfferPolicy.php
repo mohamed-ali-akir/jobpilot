@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\offer;
+use App\Models\Offer;
 use Illuminate\Auth\Access\Response;
 
 class OfferPolicy
@@ -19,7 +19,7 @@ class OfferPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, offer $offer): bool
+    public function view(User $user, Offer $offer): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class OfferPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, offer $offer): bool
+    public function update(User $user, Offer $offer): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class OfferPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, offer $offer): bool
+    public function delete(User $user, Offer $offer): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class OfferPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, offer $offer): bool
+    public function restore(User $user, Offer $offer): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class OfferPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, offer $offer): bool
+    public function forceDelete(User $user, Offer $offer): bool
     {
         return false;
     }
