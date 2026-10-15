@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Company;
 use App\Models\Offer;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -33,6 +34,9 @@ class OfferFactory extends Factory
             'date_debut' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
             'address' => fake()->randomElement(['Paris', 'Lyon', 'Marseille', 'Lille', 'Bordeaux', 'Nantes', 'Toulouse', 'Dijon']),
             'salaire' => fake()->numberBetween(1500, 4000),
+                        // L'auteur : un éditeur existant au hasard, sinon on en crée un
+            'user_id' => User::where('role', 'editeur')->inRandomOrder()->value('id') 
+                ?? User::factory()->editeur(),
         ];
     }
 }

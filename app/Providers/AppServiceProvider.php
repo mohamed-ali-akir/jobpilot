@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+
+
+use App\Enums\Role;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +30,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // Gates : autorisations générales, qui ne portent pas sur un modèle précis
+        Gate::define('gerer-utilisateurs', fn (User $user) => $user->isAdmin());
+        Gate::define('gerer-donnees', fn (User $user) => $user->hasRole(Role::Editeur, Role::Admin));
+
+        // Erreur explicite si on oublie un with() (problème N+1), sauf en production
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 
     /**

@@ -5,6 +5,7 @@
                 <a href="{{ route('offres.show', $offer) }}" class="hover:underline">{{ $offer->name }}</a>
             </flux:heading>
             <flux:text>{{ $offer->company->nom }}</flux:text>
+            <flux:text size="sm" class="text-zinc-500">Publiée par {{ $offer->user?->name ?? 'Auteur inconnu' }}</flux:text>
         </div>
 
         {{-- Badge dynamique selon le type de contrat --}}

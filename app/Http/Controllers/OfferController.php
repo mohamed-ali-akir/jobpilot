@@ -2,94 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreOfferRequest;
-use App\Http\Requests\UpdateOfferRequest;
+use App\Http\Requests\OfferRequest;
 use App\Models\Company;
 use App\Models\Offer;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Attributes\Controllers\Authorize;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Illuminate\View\View;
 
+// Connexion obligatoire, SAUF pour consulter les offres (liste et détail)
+#[Middleware('auth', except: ['index', 'show'])]
+#[Middleware('verified', except: ['index', 'show'])]
 class OfferController extends Controller
 {
-    /**
-     * Liste des offres.
-     */
-    public function index()
+    public function index(): View
     {
-        // with() : chargement "eager" des entreprises pour éviter une requête par offre
-        $offers = Offer::with('company')->withCount('candidats')->latest()->get();
+        $offers = Offer::with('company', 'user')->withCount('candidats')->latest()->get();
 
-        return view('offres.index', compact('offers'));
+        return view('offres.index', ['offers' => $offers, 'titre' => 'Offres d\'emploi']);
     }
 
-    /**
-     * Formulaire d'ajout.
-     */
-    public function create()
+    // « Mes offres » : seulement celles de l'utilisateur connecté
+    #[Authorize('create', Offer::class)]
+    public function mine(Request $request): View
     {
-        $companies = Company::orderBy('nom')->get();
+        $offers = $request->user()->offers()
+            ->with('company', 'user')->withCount('candidats')->latest()->get();
 
+        return view('offres.index', ['offers' => $offers, 'titre' => 'Mes offres']);
+    }
+
+    #[Authorize('create', Offer::class)]
+    public function create(): View
+    {
         return view('offres.create', [
-            'companies' => $companies,
+            'companies' => Company::orderBy('nom')->get(),
             'typesContrat' => Offer::TYPES_CONTRAT,
         ]);
     }
 
-    /**
-     * Enregistre une nouvelle offre.
-     */
-    public function store(StoreOfferRequest $request)
+    #[Authorize('create', Offer::class)]
+    public function store(OfferRequest $request): RedirectResponse
     {
-        Offer::create($request->validated());
+        // L'auteur = l'utilisateur connecté, jamais une valeur du formulaire
+        $request->user()->offers()->create($request->validated());
 
-        return redirect()
-            ->route('offres.index')
-            ->with('success', 'Offre ajoutée avec succès.');
+        return to_route('offres.index')->with('success', 'Offre ajoutée avec succès.');
     }
 
-    /**
-     * Détail d'une offre.
-     */
-    public function show(Offer $offer)
+    public function show(Offer $offer): View
     {
-        $offer->load('company', 'candidats');
+        $offer->load('company', 'user', 'candidats');
 
         return view('offres.show', compact('offer'));
     }
 
-    /**
-     * Formulaire de modification.
-     */
-    public function edit(Offer $offer)
+    #[Authorize('update', 'offer')] // 'offer' = nom du paramètre dans l'URL
+    public function edit(Offer $offer): View
     {
-        $companies = Company::orderBy('nom')->get();
-
         return view('offres.edit', [
             'offer' => $offer,
-            'companies' => $companies,
+            'companies' => Company::orderBy('nom')->get(),
             'typesContrat' => Offer::TYPES_CONTRAT,
         ]);
     }
 
-    /**
-     * Met à jour une offre.
-     */
-    public function update(UpdateOfferRequest $request, Offer $offer)
+    #[Authorize('update', 'offer')]
+    public function update(OfferRequest $request, Offer $offer): RedirectResponse
     {
         $offer->update($request->validated());
 
-        return redirect()
-            ->route('offres.index')
-            ->with('success', 'Offre modifiée avec succès.');
+        return to_route('offres.index')->with('success', 'Offre modifiée avec succès.');
     }
 
-    /**
-     * Supprime une offre.
-     */
-    public function destroy(Offer $offer)
+    #[Authorize('delete', 'offer')]
+    public function destroy(Offer $offer): RedirectResponse
     {
         $offer->delete();
 
-        return redirect()
-            ->route('offres.index')
-            ->with('success', 'Offre supprimée avec succès.');
+        return to_route('offres.index')->with('success', 'Offre supprimée avec succès.');
     }
 }

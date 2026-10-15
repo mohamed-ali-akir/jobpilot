@@ -2,65 +2,40 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use App\Enums\Role;
 use App\Models\Offer;
-use Illuminate\Auth\Access\Response;
+use App\Models\User;
 
 class OfferPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    // Voir la liste : tout le monde, même un invité
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Offer $offer): bool
+    // Voir le détail d'une offre : tout le monde
+    public function view(?User $user, Offer $offer): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
+    // Créer : éditeur ou admin
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole(Role::Editeur, Role::Admin);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    // Modifier : l'admin modifie tout, l'éditeur seulement SES offres
     public function update(User $user, Offer $offer): bool
     {
-        return false;
+        return $user->isAdmin()
+            || ($user->isEditeur() && $offer->user()->is($user));
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
+    // Supprimer : admin uniquement
     public function delete(User $user, Offer $offer): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Offer $offer): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Offer $offer): bool
-    {
-        return false;
+        return $user->isAdmin();
     }
 }

@@ -19,7 +19,7 @@ class DashboardController extends Controller
             ['label' => 'Candidats', 'count' => Candidat::count(), 'route' => 'candidats.index', 'icon' => 'users'],
         ];
 
-        $latestOffers = Offer::with('company')->latest()->take(4)->get();
+        $latestOffers = Offer::with('company','user')->latest()->take(4)->get();
 
         return view('dashboard', compact('stats', 'latestOffers'));
     }
