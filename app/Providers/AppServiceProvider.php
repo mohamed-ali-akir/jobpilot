@@ -2,15 +2,13 @@
 
 namespace App\Providers;
 
-
-
 use App\Enums\Role;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 

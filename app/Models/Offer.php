@@ -50,7 +50,7 @@ class Offer extends Model
         return $this->belongsToMany(Candidat::class)->withTimestamps();
     }
 
-        // L'auteur de l'offre (relation inverse du hasMany)
+    // L'auteur de l'offre (relation inverse du hasMany)
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Enums\Role;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -21,6 +21,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property Role $role
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -37,9 +38,9 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
-            // Valeur par défaut côté PHP (la même que dans la base)
+    // Valeur par défaut côté PHP (la même que dans la base)
     protected $attributes = [
-            'role' => Role::Visiteur->value,
+        'role' => Role::Visiteur->value,
     ];
 
     /**
@@ -52,8 +53,8 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-             'role' => Role::class,
-            
+            'role' => Role::class,
+
         ];
     }
 
@@ -68,7 +69,8 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
     }
-        // Les offres publiées par l'utilisateur (relation 1-n)
+
+    // Les offres publiées par l'utilisateur (relation 1-n)
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class);

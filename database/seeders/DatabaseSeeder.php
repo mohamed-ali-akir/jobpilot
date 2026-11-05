@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Seeders;
+
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -13,7 +14,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-       public function run(): void
+    public function run(): void
     {
         // Comptes de test (mot de passe : password)
         User::factory()->admin()->create([

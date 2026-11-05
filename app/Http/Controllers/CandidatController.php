@@ -49,7 +49,7 @@ class CandidatController extends Controller
      */
     public function show(Candidat $candidat)
     {
-        $candidat->load('offers.company','offers.user');
+        $candidat->load('offers.company', 'offers.user');
 
         return view('candidats.show', compact('candidat'));
     }

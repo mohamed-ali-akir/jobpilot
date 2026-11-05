@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -37,7 +38,7 @@ class UserFactory extends Factory
         ];
     }
 
-        // User::factory()->editeur()->create()
+    // User::factory()->editeur()->create()
     public function editeur(): static
     {
         return $this->state(fn () => ['role' => Role::Editeur]);
