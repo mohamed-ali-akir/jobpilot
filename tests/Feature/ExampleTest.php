@@ -1,7 +1,5 @@
 <?php
 
-test('returns a successful response', function () {
-    $response = $this->get(route('home'));
-
-    $response->assertOk();
+test('l\'accueil redirige vers la liste des offres', function () {
+    $this->get(route('home'))->assertRedirect(route('offres.index'));
 });

@@ -5,14 +5,10 @@ use App\Models\Company;
 use App\Models\Offer;
 use App\Models\User;
 
+// Ces tests vérifient le CRUD : on se connecte en admin, qui a tous les droits.
+// Les droits de chaque rôle sont testés dans OffreAutorisationTest.
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
-});
-
-test('les invités sont redirigés vers la connexion', function () {
-    auth()->logout();
-
-    $this->get(route('offres.index'))->assertRedirect(route('login'));
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 test('toutes les pages s\'affichent', function () {

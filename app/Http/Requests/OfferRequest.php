@@ -7,19 +7,15 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateOfferRequest extends FormRequest
+class OfferRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
+        // Les droits sont vérifiés par #[Authorize] sur le contrôleur (étape suivante)
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
@@ -35,8 +31,6 @@ class UpdateOfferRequest extends FormRequest
     }
 
     /**
-     * Messages d'erreur en français.
-     *
      * @return array<string, string>
      */
     public function messages(): array
