@@ -91,4 +91,9 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return $this->role === Role::Editeur;
     }
+
+    public function isCandidat(): bool
+    {
+        return $this->role === Role::Candidat;
+    }
 }

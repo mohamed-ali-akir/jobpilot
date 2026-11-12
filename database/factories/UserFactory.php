@@ -50,6 +50,12 @@ class UserFactory extends Factory
         return $this->state(fn () => ['role' => Role::Admin]);
     }
 
+    // User::factory()->candidat()->create()
+    public function candidat(): static
+    {
+        return $this->state(fn () => ['role' => Role::Candidat]);
+    }
+
     /**
      * Indicate that the model's email address should be unverified.
      */
