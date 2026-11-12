@@ -41,6 +41,12 @@
                             Candidats
                         </flux:sidebar.item>
                     @endcan
+
+                    @can('candidater')
+                        <flux:sidebar.item icon="paper-airplane" :href="route('candidatures.index')" :current="request()->routeIs('candidatures.index')">
+                            Mes candidatures
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
 
                 @can('gerer-utilisateurs')
