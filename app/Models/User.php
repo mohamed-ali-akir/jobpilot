@@ -98,6 +98,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->role === Role::Candidat;
     }
 
+    // A-t-il déjà postulé à cette offre ? (faux s'il n'a pas encore de fiche candidat)
+    public function aPostule(Offer $offer): bool
+    {
+        return $this->candidat?->offers()->whereKey($offer->id)->exists() ?? false;
+    }
+
     // La fiche candidat liée à ce compte (relation 1-1, peut être absente)
     public function candidat(): HasOne
     {

@@ -38,4 +38,16 @@ class OfferPolicy
     {
         return $user->isAdmin();
     }
+
+    // Postuler : être candidat et ne pas avoir déjà postulé à cette offre
+    public function apply(User $user, Offer $offer): bool
+    {
+        return $user->isCandidat() && ! $user->aPostule($offer);
+    }
+
+    // Retirer sa candidature : être candidat et avoir postulé à cette offre
+    public function withdraw(User $user, Offer $offer): bool
+    {
+        return $user->isCandidat() && $user->aPostule($offer);
+    }
 }

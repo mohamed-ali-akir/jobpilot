@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         // Gates : autorisations générales, qui ne portent pas sur un modèle précis
         Gate::define('gerer-utilisateurs', fn (User $user) => $user->isAdmin());
         Gate::define('gerer-donnees', fn (User $user) => $user->hasRole(Role::Editeur, Role::Admin));
+        Gate::define('candidater', fn (User $user) => $user->isCandidat());
 
         // Erreur explicite si on oublie un with() (problème N+1), sauf en production
         Model::preventLazyLoading(! $this->app->isProduction());
