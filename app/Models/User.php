@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -90,5 +91,22 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function isEditeur(): bool
     {
         return $this->role === Role::Editeur;
+    }
+
+    public function isCandidat(): bool
+    {
+        return $this->role === Role::Candidat;
+    }
+
+    // A-t-il déjà postulé à cette offre ? (faux s'il n'a pas encore de fiche candidat)
+    public function aPostule(Offer $offer): bool
+    {
+        return $this->candidat?->offers()->whereKey($offer->id)->exists() ?? false;
+    }
+
+    // La fiche candidat liée à ce compte (relation 1-1, peut être absente)
+    public function candidat(): HasOne
+    {
+        return $this->hasOne(Candidat::class);
     }
 }

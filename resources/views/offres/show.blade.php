@@ -14,6 +14,26 @@
                 <flux:button size="sm" icon="building-office" :href="route('entreprises.show', $offer->company)">Voir l'entreprise</flux:button>
             @endcan
         </x-offre-card>
+        {{-- Candidat : postuler ou retirer sa candidature --}}
+        @can('apply', $offer)
+            <form action="{{ route('candidatures.store', $offer) }}" method="POST" class="mt-6">
+                @csrf
+                <flux:button variant="primary" icon="paper-airplane" type="submit">Postuler</flux:button>
+            </form>
+        @endcan
+
+        @can('withdraw', $offer)
+            <div class="mt-6 flex flex-wrap items-center gap-4">
+                <flux:text>Vous avez postulé le {{ auth()->user()->candidat->offers()->whereKey($offer->id)->first()->pivot->created_at->format('d/m/Y') }}.</flux:text>
+                <form action="{{ route('candidatures.destroy', $offer) }}" method="POST"
+                      onsubmit="return confirm('Retirer cette candidature ?')">
+                    @csrf
+                    @method('DELETE')
+                    <flux:button size="sm" variant="danger" icon="x-mark" type="submit">Retirer ma candidature</flux:button>
+                </form>
+            </div>
+        @endcan
+
 
         @can('gerer-donnees')
             <flux:heading size="lg" class="mb-3 mt-8">Candidats ({{ $offer->candidats->count() }})</flux:heading>

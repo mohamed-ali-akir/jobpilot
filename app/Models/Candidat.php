@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\CandidatFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Candidat extends Model
@@ -31,5 +32,11 @@ class Candidat extends Model
     public function getFullNameAttribute(): string
     {
         return $this->firstname.' '.$this->lastname;
+    }
+
+    // Le compte utilisateur du candidat (vide pour les candidats saisis par un éditeur)
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
