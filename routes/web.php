@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CandidatController;
 use App\Http\Controllers\CompanyController;
@@ -17,6 +19,10 @@ Route::redirect('/', '/offres')->name('home');
 Route::get('mes-offres', [OfferController::class, 'mine'])->name('offres.mine');
 Route::resource('offres', OfferController::class)
     ->parameters(['offres' => 'offer']);
+// Candidatures (rôle candidat) : la protection est dans CandidatureController
+Route::get('mes-candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
+Route::post('offres/{offer}/candidature', [CandidatureController::class, 'store'])->name('candidatures.store');
+Route::delete('offres/{offer}/candidature', [CandidatureController::class, 'destroy'])->name('candidatures.destroy');
 
 // Profil : tout utilisateur connecté (matrice : visiteur, éditeur, admin)
 Route::middleware('auth')->group(function () {
