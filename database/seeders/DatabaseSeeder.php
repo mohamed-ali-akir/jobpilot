@@ -46,5 +46,16 @@ class DatabaseSeeder extends Seeder
 
         // Les offres qui n'ont pas d'auteur sont attribuées à l'éditeur principal
         Offer::whereNull('user_id')->update(['user_id' => $editeur->id]);
+
+                // Compte candidat : sa fiche candidat (relation 1-1) et 2 candidatures
+                $candidat = User::factory()->candidat()->create([
+                    'name' => 'Lina Martin',
+                    'email' => 'candidat@jobpilot.test',
+                ]);
+        
+                $candidat->candidat()->create([
+                    'firstname' => 'Lina',
+                    'lastname' => 'Martin',
+                ])->offers()->attach(Offer::latest()->take(2)->pluck('id'));
     }
 }
